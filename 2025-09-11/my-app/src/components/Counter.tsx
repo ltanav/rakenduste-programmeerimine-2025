@@ -1,9 +1,10 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import "../App.css"
 
 function Counter() {
   const [count, setCount] = useState(0)
 
+  // Funktsioon counteri muutmiseks
   function increaseCounter(amount: number) {
     setCount(count => count + amount)
   }
