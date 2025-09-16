@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "deploy": "gh-pages -d dist"
   },
-  "homepage": "https://github.com/ltanav/rakenduste-programmeerimine-2025",
+  "homepage": "https://{ltanav}.github.io/{rakenduste-programmeerimine-2025}/",
   "dependencies": {
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
