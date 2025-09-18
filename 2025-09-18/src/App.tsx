@@ -25,9 +25,6 @@ function App() {
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
 
         {/* MUI nupp */}
         <Button variant="contained" color="primary">
@@ -36,10 +33,6 @@ function App() {
       </div>
 
       <Outlet /> {/* Alamkomponendid React Routeris renderdatakse siia */}
-
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
