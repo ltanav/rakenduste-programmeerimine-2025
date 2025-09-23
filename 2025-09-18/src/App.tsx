@@ -1,40 +1,101 @@
-import { useState } from 'react'
-import Button from '@mui/material/Button'
-import { Outlet } from 'react-router-dom'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import { Outlet, Link as RouterLink } from "react-router-dom";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import Typography from "@mui/material/Typography";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Container from "@mui/material/Container";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [open, setOpen] = React.useState(false);
+
+  const toggleDrawer = (val: boolean) => () => setOpen(val);
+
+  const navItems = [
+    { to: "/", label: "Home" },
+    { to: "/about", label: "About" },
+    { to: "/something", label: "Something" },
+  ];
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
+    <Box sx={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
+      {/* AppBar */}
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={toggleDrawer(true)}
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
 
-      <h1>Vite + React</h1>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            My MUI App
+          </Typography>
 
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
+          {/* Top navigation buttons */}
+          <Stack direction="row" spacing={1}>
+            {navItems.map((item) => (
+              <Button
+                key={item.to}
+                color="inherit"
+                component={RouterLink}
+                to={item.to}
+              >
+                {item.label}
+              </Button>
+            ))}
+          </Stack>
+        </Toolbar>
+      </AppBar>
 
-        {/* MUI nupp */}
-        <Button variant="contained" color="primary">
-          MUI Nupp
-        </Button>
-      </div>
+      {/* Drawer for mobile navigation */}
+      <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
+        <Box
+          sx={{ width: 240 }}
+          role="presentation"
+          onClick={toggleDrawer(false)}
+        >
+          <List>
+            {navItems.map((item) => (
+              <ListItem
+                button
+                key={item.to}
+                component={RouterLink}
+                to={item.to}
+              >
+                <ListItemText primary={item.label} />
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Drawer>
 
-      <Outlet /> {/* Alamkomponendid React Routeris renderdatakse siia */}
-    </>
-  )
+      {/* Page content */}
+      <Container maxWidth="md" sx={{ mt: 4, mb: 4, flexGrow: 1 }}>
+        <Outlet />
+      </Container>
+
+      {/* Footer */}
+      <Box
+        component="footer"
+        sx={{ py: 2, textAlign: "center", bgcolor: "background.paper" }}
+      >
+        <Typography variant="body2" color="text.secondary">
+          © {new Date().getFullYear()} Lisett-Marleen Foster
+        </Typography>
+      </Box>
+    </Box>
+  );
 }
-
-export default App
