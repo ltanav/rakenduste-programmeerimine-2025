@@ -8,6 +8,7 @@ import Home from "./components/Home";
 import About from "./components/About";
 import Something from "./components/Something";
 
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -15,6 +16,7 @@ const theme = createTheme({
     },
   },
 });
+
 
 const router = createHashRouter([
   {
