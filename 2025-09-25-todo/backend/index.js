@@ -1,14 +1,13 @@
 const express = require("express");
-const cors = require("cors");
-
 const app = express();
-app.use(cors());
+const PORT = 3002;
+
+const todosRoutes = require("./routes/todos.routes");
+
 app.use(express.json());
 
-const PORT = 3001;
+app.use("/todos", todosRoutes);
 
-app.get("/", (req, res) => {
-  res.send("Hello from TODO backend!");
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
-
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
