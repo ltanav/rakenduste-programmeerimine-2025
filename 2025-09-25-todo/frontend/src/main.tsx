@@ -3,11 +3,14 @@ import ReactDOM from "react-dom/client";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import App from "./components/App";
+import App from "./App";
 import TodosPage from "./components/TodosPage";
+import AdminTodosPage from "./components/AdminTodosPage";
 
 const theme = createTheme({
-  palette: { primary: { main: "#1976d2" } },
+  palette: {
+    primary: { main: "#1976d2" },
+  },
 });
 
 const router = createHashRouter([
@@ -15,7 +18,8 @@ const router = createHashRouter([
     path: "/",
     element: <App />,
     children: [
-      { path: "/", element: <TodosPage /> },  // TODO leht otse /
+      { path: "todos", element: <TodosPage /> },
+      { path: "admin", element: <AdminTodosPage /> },
     ],
   },
 ]);
