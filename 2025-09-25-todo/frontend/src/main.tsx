@@ -8,7 +8,11 @@ import TodosPage from "./components/TodosPage";
 import AdminTodosPage from "./components/AdminTodosPage";
 import LoginPage from "./components/LoginPage";
 
-const theme = createTheme({ palette: { primary: { main: "#1976d2" } } });
+const theme = createTheme({
+  palette: {
+    primary: { main: "#1976d2" },
+  },
+});
 
 const router = createHashRouter([
   {
