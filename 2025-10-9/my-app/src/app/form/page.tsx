@@ -1,75 +1,139 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { TextInput, Button, Textarea, Stack, Group } from "@mantine/core";
-import { DateTimePicker } from "@mantine/dates";
+import React, { useState } from 'react';
+import {
+  TextInput,
+  Textarea,
+  Button,
+  Group,
+  Box,
+  Notification,
+} from '@mantine/core';
+import { DateTimePicker } from '@mantine/dates';
+import {
+  emailRegex,
+  phoneRegex,
+  postalCodeRegex,
+  dateRegex,
+} from '@/utils/regex';
+
+type FormState = {
+  eesnimi: string;
+  perenimi: string;
+  email: string;
+  telefon: string;
+  aeg: Date | null;
+  tekst: string;
+  postiindeks?: string;
+};
 
 export default function FormPage() {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    date: new Date(),
-    message: "",
+  const [form, setForm] = useState<FormState>({
+    eesnimi: '',
+    perenimi: '',
+    email: '',
+    telefon: '',
+    aeg: new Date(),
+    tekst: '',
+    postiindeks: '',
   });
 
-  const handleChange = (field: string, value: string | Date) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleChange = (field: keyof FormState, value: any) =>
+    setForm(prev => ({ ...prev, [field]: value }));
+
+  const validate = () => {
+    const e: Record<string, string> = {};
+    if (!form.eesnimi) e.eesnimi = 'Eesnimi on nõutud';
+    if (!form.perenimi) e.perenimi = 'Perekonnanimi on nõutud';
+    if (!emailRegex.test(form.email)) e.email = 'Kehtiv e-posti aadress on nõutud';
+    if (!phoneRegex.test(form.telefon)) e.telefon = 'Kehtiv telefoninumber on nõutud';
+    if (!form.aeg) e.aeg = 'Kuupäev ja kellaaeg on nõutud';
+    if (form.postiindeks && !postalCodeRegex.test(form.postiindeks))
+      e.postiindeks = 'Postiindeks peab olema 5 numbrit (näide: 12345)';
+    setErrors(e);
+    return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert(JSON.stringify(formData, null, 2));
+  const handleSubmit = (ev?: React.FormEvent) => {
+    ev?.preventDefault();
+    if (!validate()) return;
+    
+    console.log('Vormi andmed:', { ...form, aeg: form.aeg?.toISOString() });
+    setSubmitted(true);
+
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Stack gap="md" maw={400} mx="auto" mt="xl">
+    <Box maw={680} mx="auto" mt="xl" p="md">
+      <form onSubmit={handleSubmit}>
         <TextInput
           label="Eesnimi"
-          placeholder="Sisesta eesnimi"
           required
-          value={formData.firstName}
-          onChange={(e) => handleChange("firstName", e.target.value)}
+          value={form.eesnimi}
+          onChange={(e) => handleChange('eesnimi', e.currentTarget.value)}
+          error={errors.eesnimi}
         />
         <TextInput
           label="Perekonnanimi"
-          placeholder="Sisesta perekonnanimi"
           required
-          value={formData.lastName}
-          onChange={(e) => handleChange("lastName", e.target.value)}
+          value={form.perenimi}
+          onChange={(e) => handleChange('perenimi', e.currentTarget.value)}
+          mt="sm"
+          error={errors.perenimi}
         />
         <TextInput
           label="E-mail"
-          type="email"
-          placeholder="example@email.com"
+          placeholder="nimi@etsi.ee"
           required
-          value={formData.email}
-          onChange={(e) => handleChange("email", e.target.value)}
+          value={form.email}
+          onChange={(e) => handleChange('email', e.currentTarget.value)}
+          mt="sm"
+          error={errors.email}
         />
         <TextInput
-          label="Telefon"
-          type="tel"
-          placeholder="+372 5555 5555"
-          value={formData.phone}
-          onChange={(e) => handleChange("phone", e.target.value)}
+          label="Telefoni number"
+          placeholder="+372 5xx xxxx"
+          required
+          value={form.telefon}
+          onChange={(e) => handleChange('telefon', e.currentTarget.value)}
+          mt="sm"
+          error={errors.telefon}
+        />
+        <TextInput
+          label="Postiindeks (valikuline)"
+          placeholder="12345"
+          value={form.postiindeks}
+          onChange={(e) => handleChange('postiindeks', e.currentTarget.value)}
+          mt="sm"
+          error={errors.postiindeks}
         />
         <DateTimePicker
           label="Kuupäev ja kellaaeg"
-          value={formData.date}
-          onChange={(value) => handleChange("date", value || new Date())}
+          value={form.aeg}
+          onChange={(val) => handleChange('aeg', val)}
+          mt="sm"
         />
         <Textarea
-          label="Lisainfo"
-          placeholder="Kirjuta siia lisainfo"
-          value={formData.message}
-          onChange={(e) => handleChange("message", e.target.value)}
+          label="Tekst"
+          placeholder="Lisa vaba vormi tekst..."
+          value={form.tekst}
+          onChange={(e) => handleChange('tekst', e.currentTarget.value)}
+          mt="sm"
         />
-        <Group justify="flex-end">
+
+        <Group position="center" mt="md">
           <Button type="submit">Saada</Button>
         </Group>
-      </Stack>
-    </form>
+      </form>
+
+      {submitted && (
+        <Notification mt="md" onClose={() => setSubmitted(false)}>
+          Vorm edukalt esitatud.
+        </Notification>
+      )}
+    </Box>
   );
 }
